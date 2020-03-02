@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class RestExceptionHandler {
 
     @ExceptionHandler(ToDoException.class)
-    public ResponseEntity<ErrorResponse> exceptionToDoHandler(Exception ex) {
+    public ResponseEntity<ErrorResponse> exceptionToDoHandler(ToDoException ex) {
         ErrorResponse error = new ErrorResponse();
         error.setErrorCode(HttpStatus.NOT_FOUND.value());
         error.setMessage(ex.getMessage());
