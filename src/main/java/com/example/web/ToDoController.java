@@ -32,22 +32,22 @@ public class ToDoController {
     @RequestMapping(value = "/todo/{id}", method = RequestMethod.GET)
     public ResponseEntity<ToDo> getToDoById(@PathVariable("id") long id) throws ToDoException {
         logger.info("ToDo id to return " + id);
-        Optional<ToDo> toDoOpt = toDoService.getToDoById(id);
-        ToDo toDo = toDoOpt.get();
+        Optional<ToDo> toDoOpt = toDoService.getToDoById(id);        
         if (!toDoOpt.isPresent()) {
             throw new ToDoException("ToDo doesn´t exist");
-        }
+        }        
+        ToDo toDo = toDoOpt.get();        
         return new ResponseEntity<ToDo>(toDo, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/todo/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Response> removeToDoById(@PathVariable("id") long id) throws ToDoException {
         logger.info("ToDo id to remove " + id);
-        Optional<ToDo> toDoOpt = toDoService.getToDoById(id);
-        ToDo toDo = toDoOpt.get();
+        Optional<ToDo> toDoOpt = toDoService.getToDoById(id);       
         if (!toDoOpt.isPresent()) {
             throw new ToDoException("ToDo to delete doesn´t exist");
         }
+        ToDo toDo = toDoOpt.get();
         toDoService.removeToDo(toDo);
         return new ResponseEntity<Response>(new Response(HttpStatus.OK.value(), "ToDo has been deleted"), HttpStatus.OK);
     }
@@ -55,6 +55,8 @@ public class ToDoController {
     @RequestMapping(value = "/todo", method = RequestMethod.POST)
     public ResponseEntity<ToDo> saveToDo(@RequestBody ToDo payload) throws ToDoException {
         logger.info("Payload to save " + payload);
+        logger.info("Payload to save " + payload.getText());
+        logger.info("Payload to save " + payload.isCompleted());
         if (!PayloadValidator.validateCreatePayload(payload)) {
             throw new ToDoException("Payload malformed, id must not be defined");
         }
@@ -64,11 +66,11 @@ public class ToDoController {
     @RequestMapping(value = "/todo", method = RequestMethod.PATCH)
     public ResponseEntity<ToDo> updateToDo(@RequestBody ToDo payload) throws ToDoException {
         logger.info("Payload to update " + payload);
-        Optional<ToDo> toDoOpt = toDoService.getToDoById(payload.getId());
-        ToDo toDo = toDoOpt.get();
+        Optional<ToDo> toDoOpt = toDoService.getToDoById(payload.getId());        
         if (!toDoOpt.isPresent()) {
             throw new ToDoException("ToDo to update doesn´t exist");
         }
+        ToDo toDo = toDoOpt.get();
         return new ResponseEntity<ToDo>(toDoService.saveToDo(payload), HttpStatus.OK);
     }
 

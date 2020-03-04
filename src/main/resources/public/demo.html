@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Example</title>	
+	
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> 
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>  	
+  	 	
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">	
+</head>
+
+<body>
+
+    <h1>Demonstration Page</h1>
+
+<div class="container">
+
+    <p>Adding new record</p>
+    <form role="form">
+        <div class="row">
+            <div class="form-group col-lg-4">
+                <label for="code">Description</label>
+                <input type="text" class="form-control" id="inputDesc" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-4 ">
+                <label for="code">Complete</label>
+                <input type="checkbox" class="form-control input-normal" id="inputComplete" />
+            </div>
+        </div>
+        <div class="row">
+            <button id="btnSubmit">Submit</button>
+        </div>
+    </form>
+</div>
+
+<hr />
+	<div>
+		<p class="greeting-id">The ID is</p>
+		<p class="greeting-content">The content is</p>
+	</div>
+<hr />	
+	<button type="submit" id="btnRefresh">Refresh</button>
+
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th scope="col">#</th>
+				<th scope="col">Description</th>
+				<th scope="col">Complete</th>				
+			</tr>
+		</thead>
+		<tbody id="tbody">
+	
+		</tbody>
+	</table>
+	
+	
+	<script>
+	
+	
+	function save(ptext, pcompleted) {
+		
+		var url = window.location.origin + "/todo";
+		var data = '{"text": "' + ptext + '", "completed": ' + pcompleted + '}';
+		
+		
+		$.ajax({
+		    url: url,
+		    dataType: 'json',
+		    type: 'post',
+		    contentType: 'application/json',
+		    data:  data ,
+		    processData: false,
+		    success: function( data, textStatus, jQxhr ){
+		
+		    },
+		    error: function( jqXhr, textStatus, errorThrown ){
+		        console.log( errorThrown );
+		    }
+		});
+	}
+	
+	
+	function loadData() {
+		
+		var url = window.location.origin;
+		
+		$.getJSON( url + "/todo", function( data ) {
+			  var items = [];
+			  $.each( data, function( i, item ) {
+			    items.push( "<tr><th scope='row'>" + item.id + "</th><td>" + item.text + "</td><td>" + item.completed + "</td></tr>" );
+			  });
+			 
+			  $( "#tbody").html(items);
+			});
+	}
+	
+	
+	
+	$('#btnRefresh, #btnSubmit').click(function () {
+		   if (this.id == 'btnRefresh') {
+		      
+		      loadData();
+		   }
+		   else if (this.id == 'btnSubmit') {
+		      
+		      save( $("#inputDesc").val(), $("#inputComplete").is(":checked") );
+		   }
+		});
+</script>
+
+</body>
+</html>
